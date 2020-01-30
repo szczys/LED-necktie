@@ -44,7 +44,8 @@ void setup()
 void loop() 
 { 
   fullFade(1,24);
-  //fallingColorFade(3);
+  randomSolid(0,28);
+  fallingColorFade(3);
   /*
   fallingDigit(400);
   fallingDigit(200);
@@ -75,6 +76,39 @@ void colorWipe(uint32_t c, uint8_t wait)
       strip.setPixelColor(i, c);
       strip.show();
       delay(wait);
+  }
+}
+
+void randomSolid(uint8_t c, uint16_t waittime) {
+  uint8_t pixelbuff[NUM_LEDS] = {};
+  for (uint8_t j=0; j<NUM_LEDS; j++) {
+    pixelbuff[j] = 0;
+    strip.setPixelColor(j,0); 
+  }
+  strip.show();
+  for (int8_t i=0; i<132; i++) {
+    uint8_t rando = random(NUM_LEDS);
+    pixelbuff[rando] ^= 1;
+    fadePixel(rando, c, pixelbuff[rando], waittime);
+  }
+  //Fade out for nice transition to next animation:
+  for (uint8_t i=0; i<NUM_LEDS; i++) {
+    if (pixelbuff[i]) fadePixel(i,c,0,waittime);
+  }
+}
+
+void fadePixel(uint8_t pixelnum, uint8_t c, uint8_t onoff, uint16_t waittime) {
+  if (pixelnum > NUM_LEDS) return;
+  if (c>2) c=0;
+  if (onoff>1) onoff=1;
+  uint8_t colorbuff[3] = { 0,0,0 };
+  for (uint8_t i=0; i<32; i++) {
+    if (onoff) colorbuff[c] = (i*8)+7;
+    else colorbuff[c] = 255-(i*8);
+    int32_t thiscolor = strip.Color(LEDGamma[colorbuff[0]],LEDGamma[colorbuff[1]],LEDGamma[colorbuff[2]]);
+    strip.setPixelColor(pixelnum,thiscolor);
+    strip.show();
+    delay(waittime);
   }
 }
 
