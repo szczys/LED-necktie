@@ -43,7 +43,8 @@ void setup()
 
 void loop() 
 { 
-  fallingColorFade(3);
+  fullFade(1,24);
+  //fallingColorFade(3);
   /*
   fallingDigit(400);
   fallingDigit(200);
@@ -77,8 +78,21 @@ void colorWipe(uint32_t c, uint8_t wait)
   }
 }
 
+void fullFade(uint8_t c, uint16_t waittime) {
+  int8_t direction = 1;
+  uint8_t colorbuff[3] = { 0,0,0 };
+  if (c>2) c=0;
+  for (int16_t i=0; i>-1; i+=direction) {
+    colorbuff[c] = i;
+    uint32_t thiscolor = strip.Color(LEDGamma[colorbuff[0]],LEDGamma[colorbuff[1]],LEDGamma[colorbuff[2]]);
+    for (uint8_t j=0; j<NUM_LEDS; j++) strip.setPixelColor(j,thiscolor);
+    strip.show();
+    if (i==190) { direction = -1; delay(2000); }
+    delay(waittime);
+  }
+}
+
 void fallingDigit(uint16_t waittime) {
-  digitalWrite(LED_BUILTIN,HIGH);
   for (uint8_t i=0; i<(NUM_LEDS/2); i++) {
     for (uint8_t j=0; j<NUM_LEDS; j++) strip.setPixelColor(j,0);
     
@@ -87,7 +101,6 @@ void fallingDigit(uint16_t waittime) {
     strip.show();
     delay(waittime);
   }
-  digitalWrite(LED_BUILTIN,LOW);
 }
 
 void fallingColorFade(uint16_t waittime) {
@@ -102,7 +115,6 @@ void fallingColorFade(uint16_t waittime) {
     for (uint8_t j=0; j<80; j++) {
       for (uint8_t i=0; i<6; i++) {
         //0-79 80-159 160-239 239-160 159-80 79-0  (Bias all of these by +16
-        digitalWrite(LED_BUILTIN,HIGH);
         if ((lightlocation[i] >= 0) && (lightlocation[i] < NUM_LEDS/2)) {
           if (i<3) {
             strip.setPixelColor(leftside[lightlocation[i]],strip.Color(0,0,LEDGamma[fadearrayidx[i]+j]));
@@ -116,7 +128,6 @@ void fallingColorFade(uint16_t waittime) {
       }
       strip.show();
       delay(waittime);
-      digitalWrite(LED_BUILTIN,LOW);
     }
     for (uint8_t i=0; i<6; i++) lightlocation[i] += 1;
   }
