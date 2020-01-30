@@ -27,7 +27,7 @@ uint8_t LEDGamma[] = {
   115,117,119,120,122,124,126,127,129,131,133,135,137,138,140,142,
   144,146,148,150,152,154,156,158,160,162,164,167,169,171,173,175,
   177,180,182,184,186,189,191,193,196,198,200,203,205,208,210,213,
-215,218,220,223,225,228,231,233,236,239,241,244,247,249,252,255 };
+  215,218,220,223,225,228,231,233,236,239,241,244,247,249,252,255 };
 
 void setup() 
 {
@@ -43,7 +43,8 @@ void setup()
 
 void loop() 
 { 
-  fallingColorFade(200);
+  fallingColorFade(3);
+  /*
   fallingDigit(400);
   fallingDigit(200);
   fallingDigit(100);
@@ -62,6 +63,7 @@ void loop()
   fullWhite();
   delay(2500);
   rainbowFade2White(3,3,1);
+  */
 }
 
 // Fill the dots one after the other with a color
@@ -89,24 +91,37 @@ void fallingDigit(uint16_t waittime) {
 }
 
 void fallingColorFade(uint16_t waittime) {
-  uint32_t fadecolor0 = strip.Color(0,0,36); 
-  uint32_t fadecolor1 = strip.Color(0,0,114);
-  uint32_t fadecolor2 = strip.Color(0,0,255);
-  int8_t lightlocation[5] = { 0, -1, -2, -3, -4 };
-  uint32_t fadearray[5] = {fadecolor0, fadecolor1, fadecolor2, fadecolor1, fadecolor0 };
-  while (lightlocation[4] < NUM_LEDS/2) {
+  int8_t lightlocation[6] = { 0, -1, -2, -3, -4, -5 };
+  uint8_t fadearrayidx[6] = {16, 96, 176, 255, 175, 95 };
+
+  //Move the pixels
+  while (lightlocation[5] < NUM_LEDS/2) {
+    //Turn all pixels off
     for (uint8_t j=0; j<NUM_LEDS; j++) strip.setPixelColor(j,0);
-    for (uint8_t i=0; i<5; i++) {
-      if ((lightlocation[i] >= 0) && (lightlocation[i] < NUM_LEDS/2)) {
-        strip.setPixelColor(leftside[lightlocation[i]],fadearray[i]);
-        strip.setPixelColor(rightside[lightlocation[i]],fadearray[i]);
+    //Fade each pixel through 80 steps
+    for (uint8_t j=0; j<80; j++) {
+      for (uint8_t i=0; i<6; i++) {
+        //0-79 80-159 160-239 239-160 159-80 79-0  (Bias all of these by +16
+        digitalWrite(LED_BUILTIN,HIGH);
+        if ((lightlocation[i] >= 0) && (lightlocation[i] < NUM_LEDS/2)) {
+          if (i<3) {
+            strip.setPixelColor(leftside[lightlocation[i]],strip.Color(0,0,LEDGamma[fadearrayidx[i]+j]));
+            strip.setPixelColor(rightside[lightlocation[i]],strip.Color(0,0,LEDGamma[fadearrayidx[i]+j])); 
+          }
+          else {
+            strip.setPixelColor(leftside[lightlocation[i]],strip.Color(0,0,LEDGamma[fadearrayidx[i]-j]));
+            strip.setPixelColor(rightside[lightlocation[i]],strip.Color(0,0,LEDGamma[fadearrayidx[i]-j])); 
+          }
+        }
       }
-      lightlocation[i] += 1;
+      strip.show();
+      delay(waittime);
+      digitalWrite(LED_BUILTIN,LOW);
     }
-    strip.show();
-    delay(waittime);
+    for (uint8_t i=0; i<6; i++) lightlocation[i] += 1;
   }
 }
+
 void rainbow(uint8_t wait) {
   uint16_t i, j;
 
