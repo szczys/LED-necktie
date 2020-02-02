@@ -47,17 +47,23 @@ void loop()
     fallingColorFade(3);
     delay(4000);
   }
-  shiftInRainbowCycle(200);
-  rainbowCycle(10);
-  shifttoblack(200);
   for (uint8_t rpts=0; rpts<4; rpts++) {
-    fullFade(1,24);
+    fullFade(2,24, 12000);
   }
-  
+  delay(3000);
+  shiftInRainbowCycle(200);
+  rainbowCycle(80);
+  shifttoblack(200);
+  delay(3000);
+  for (uint8_t rpts=0; rpts<4; rpts++) {
+    fullFade(1,24,12000);
+  }
+  delay(3000);
   randomSolid(36,0, 28);
   for (uint8_t rpts=0; rpts<4; rpts++) {
-    fullFade(0,24);
+    fullFade(0,24, 12000);
   }
+  delay(3000);
   /*
   fallingDigit(400);
   fallingDigit(200);
@@ -124,7 +130,7 @@ void fadePixel(uint8_t pixelnum, uint8_t c, uint8_t onoff, uint16_t waittime) {
   }
 }
 
-void fullFade(uint8_t c, uint16_t waittime) {
+void fullFade(uint8_t c, uint16_t waittime, uint16_t ontime) {
   int8_t direction = 1;
   uint8_t colorbuff[3] = { 0,0,0 };
   if (c>2) c=0;
@@ -133,7 +139,7 @@ void fullFade(uint8_t c, uint16_t waittime) {
     uint32_t thiscolor = strip.Color(LEDGamma[colorbuff[0]],LEDGamma[colorbuff[1]],LEDGamma[colorbuff[2]]);
     for (uint8_t j=0; j<NUM_LEDS; j++) strip.setPixelColor(j,thiscolor);
     strip.show();
-    if (i==190) { direction = -1; delay(2000); }
+    if (i==190) { direction = -1; delay(ontime); }
     delay(waittime);
   }
 }
