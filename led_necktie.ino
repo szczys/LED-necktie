@@ -33,7 +33,7 @@ void setup()
 {
   strip.begin();// Sets up the SPI
   strip.show();// Clears the strip, as by default the strip data is set to all LED's off.
-  strip.setBrightness(80);
+  strip.setBrightness(255);
   for (uint8_t i=0; i<NUM_LEDS/2; i++) {
     leftside[i] = i;
     rightside[i] = NUM_LEDS-1-i;
@@ -60,7 +60,7 @@ void loop()
     fullFade(1,24,12000);
   }
   delay(3000);
-  randomSolid(36,0, 28);
+  randomSolid(36,random(3), 28);
   for (uint8_t rpts=0; rpts<4; rpts++) {
     fullFade(0,24, 12000);
   }
