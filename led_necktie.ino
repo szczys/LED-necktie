@@ -33,7 +33,7 @@ void setup()
 {
   strip.begin();// Sets up the SPI
   strip.show();// Clears the strip, as by default the strip data is set to all LED's off.
-  strip.setBrightness(128);
+  strip.setBrightness(80);
   for (uint8_t i=0; i<NUM_LEDS/2; i++) {
     leftside[i] = i;
     rightside[i] = NUM_LEDS-1-i;
@@ -42,10 +42,23 @@ void setup()
 }
 
 void loop() 
-{ 
-  fullFade(1,24);
-  randomSolid(76,0, 28);
-  fallingColorFade(3);
+{
+  /*
+  for (uint8_t rpts=0; rpts<4; rpts++) {
+    fallingColorFade(3);
+    delay(4000);
+  }
+  */
+  shiftInRainbowCycle(200);
+  rainbowCycle(10);
+  for (uint8_t rpts=0; rpts<4; rpts++) {
+    fullFade(1,24);
+  }
+  
+  randomSolid(36,0, 28);
+  for (uint8_t rpts=0; rpts<4; rpts++) {
+    fullFade(0,24);
+  }
   /*
   fallingDigit(400);
   fallingDigit(200);
@@ -180,7 +193,28 @@ void rainbow(uint8_t wait) {
   }
 }
 
+// Make a nice transition into rainbowCycle
+void shiftInRainbowCycle(uint8_t wait) 
+{
+  uint16_t i, j;
+  uint32_t colorbuff[NUM_LEDS] = {};
 
+  for(j=0; j<256*5; j++) 
+  { // 5 cycles of all colors on wheel
+    for(i=0; i< strip.numPixels(); i++) 
+    {
+      colorbuff[i] = Wheel(((i * 256 / strip.numPixels()) + j) & 255);
+    }
+  }
+  for (int8_t h=NUM_LEDS-1; h>-1; h--) {
+    for(i=0; i<NUM_LEDS; i++) strip.setPixelColor(i,0);
+    for (uint8_t k=h; k<NUM_LEDS; k++) {
+      strip.setPixelColor(k,colorbuff[k-h]);
+    }
+    strip.show();
+    delay(wait);
+  }
+}
 
 // Slightly different, this makes the rainbow equally distributed throughout
 void rainbowCycle(uint8_t wait) 
@@ -190,7 +224,7 @@ void rainbowCycle(uint8_t wait)
   for(j=0; j<256*5; j++) 
   { // 5 cycles of all colors on wheel
     for(i=0; i< strip.numPixels(); i++) 
-  {
+    {
       strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
     }
     strip.show();
