@@ -43,14 +43,13 @@ void setup()
 
 void loop() 
 {
-  /*
   for (uint8_t rpts=0; rpts<4; rpts++) {
     fallingColorFade(3);
     delay(4000);
   }
-  */
   shiftInRainbowCycle(200);
   rainbowCycle(10);
+  shifttoblack(200);
   for (uint8_t rpts=0; rpts<4; rpts++) {
     fullFade(1,24);
   }
@@ -213,6 +212,15 @@ void shiftInRainbowCycle(uint8_t wait)
     }
     strip.show();
     delay(wait);
+  }
+}
+
+//Shifts pixels off from last pixel to first
+void shifttoblack(uint16_t waittime) {
+  for (int8_t i=NUM_LEDS-1; i>-1; i--) {
+    strip.setPixelColor(i,0);
+    strip.show();
+    delay(waittime);
   }
 }
 
