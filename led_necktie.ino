@@ -44,7 +44,7 @@ void setup()
 void loop() 
 { 
   fullFade(1,24);
-  randomSolid(0,28);
+  randomSolid(76,0, 28);
   fallingColorFade(3);
   /*
   fallingDigit(400);
@@ -79,14 +79,14 @@ void colorWipe(uint32_t c, uint8_t wait)
   }
 }
 
-void randomSolid(uint8_t c, uint16_t waittime) {
+void randomSolid(uint8_t totaltransitions, uint8_t c, uint16_t waittime) {
   uint8_t pixelbuff[NUM_LEDS] = {};
   for (uint8_t j=0; j<NUM_LEDS; j++) {
     pixelbuff[j] = 0;
     strip.setPixelColor(j,0); 
   }
   strip.show();
-  for (int8_t i=0; i<132; i++) {
+  for (int8_t i=0; i<totaltransitions; i++) {
     uint8_t rando = random(NUM_LEDS);
     pixelbuff[rando] ^= 1;
     fadePixel(rando, c, pixelbuff[rando], waittime);
