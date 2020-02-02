@@ -38,7 +38,8 @@ void setup()
     leftside[i] = i;
     rightside[i] = NUM_LEDS-1-i;
   }
-  pinMode(LED_BUILTIN,OUTPUT);
+  //pinMode(LED_BUILTIN,OUTPUT);
+  //digitalWrite(LED_BUILTIN,LOW);
 }
 
 void loop() 
